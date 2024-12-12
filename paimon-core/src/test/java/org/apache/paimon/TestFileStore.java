@@ -797,7 +797,7 @@ public class TestFileStore extends KeyValueFileStore {
 
             conf.set(CoreOptions.FILE_FORMAT, format);
             conf.set(CoreOptions.MANIFEST_FORMAT, format);
-            conf.set(CoreOptions.PATH, root);
+            conf.set(CoreOptions.WAREHOUSE_TABLE_PATH, root);
             conf.set(CoreOptions.BUCKET, numBuckets);
 
             conf.set(CoreOptions.CHANGELOG_PRODUCER, changelogProducer);

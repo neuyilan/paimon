@@ -21,17 +21,18 @@ package org.apache.paimon.table;
 import org.apache.paimon.CoreOptions;
 import org.apache.paimon.catalog.CatalogContext;
 import org.apache.paimon.fs.FileIO;
+import org.apache.paimon.fs.HybirdFileIO;
 import org.apache.paimon.fs.Path;
+import org.apache.paimon.io.PathProvider;
 import org.apache.paimon.options.Options;
 import org.apache.paimon.schema.SchemaManager;
 import org.apache.paimon.schema.TableSchema;
 import org.apache.paimon.utils.StringUtils;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.util.Optional;
 
-import static org.apache.paimon.CoreOptions.PATH;
+import static org.apache.paimon.CoreOptions.WAREHOUSE_TABLE_PATH;
+import static org.apache.paimon.catalog.Catalog.DB_SUFFIX;
 import static org.apache.paimon.utils.Preconditions.checkArgument;
 
 /** Factory to create {@link FileStoreTable}. */
@@ -39,17 +40,14 @@ public class FileStoreTableFactory {
 
     public static FileStoreTable create(CatalogContext context) {
         FileIO fileIO;
-        try {
-            fileIO = FileIO.get(CoreOptions.path(context.options()), context);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
+        fileIO = new HybirdFileIO();
+        fileIO.configure(context);
         return create(fileIO, context.options());
     }
 
     public static FileStoreTable create(FileIO fileIO, Path path) {
         Options options = new Options();
-        options.set(PATH, path.toString());
+        options.set(WAREHOUSE_TABLE_PATH, path.toString());
         return create(fileIO, options);
     }
 
@@ -86,9 +84,17 @@ public class FileStoreTableFactory {
             TableSchema tableSchema,
             Options dynamicOptions,
             CatalogEnvironment catalogEnvironment) {
+        CoreOptions coreOptions = CoreOptions.fromMap(tableSchema.options());
+        PathProvider pathProvider =
+                new PathProvider(
+                        coreOptions.getWarehouseRootPath(),
+                        coreOptions.getDefaultWriteLocation(),
+                        getDatabaseName(tablePath),
+                        getTableName(tablePath));
+
         FileStoreTable table =
                 createWithoutFallbackBranch(
-                        fileIO, tablePath, tableSchema, dynamicOptions, catalogEnvironment);
+                        fileIO, pathProvider, tableSchema, dynamicOptions, catalogEnvironment);
 
         Options options = new Options(table.options());
         String fallbackBranch = options.get(CoreOptions.SCAN_FALLBACK_BRANCH);
@@ -105,7 +111,7 @@ public class FileStoreTableFactory {
                     fallbackBranch);
             FileStoreTable fallbackTable =
                     createWithoutFallbackBranch(
-                            fileIO, tablePath, schema.get(), branchOptions, catalogEnvironment);
+                            fileIO, pathProvider, schema.get(), branchOptions, catalogEnvironment);
             table = new FallbackReadFileStoreTable(table, fallbackTable);
         }
 
@@ -114,16 +120,28 @@ public class FileStoreTableFactory {
 
     public static FileStoreTable createWithoutFallbackBranch(
             FileIO fileIO,
-            Path tablePath,
+            PathProvider pathProvider,
             TableSchema tableSchema,
             Options dynamicOptions,
             CatalogEnvironment catalogEnvironment) {
         FileStoreTable table =
                 tableSchema.primaryKeys().isEmpty()
                         ? new AppendOnlyFileStoreTable(
-                                fileIO, tablePath, tableSchema, catalogEnvironment)
+                                fileIO, pathProvider, tableSchema, catalogEnvironment)
                         : new PrimaryKeyFileStoreTable(
-                                fileIO, tablePath, tableSchema, catalogEnvironment);
+                                fileIO, pathProvider, tableSchema, catalogEnvironment);
         return table.copy(dynamicOptions.toMap());
+    }
+
+    private static String getDatabaseName(Path tablePath) {
+        String dbName = tablePath.getParent().getName();
+        if (dbName.endsWith(DB_SUFFIX)) {
+            return dbName.substring(0, dbName.length() - DB_SUFFIX.length());
+        }
+        return null;
+    }
+
+    private static String getTableName(Path tablePath) {
+        return tablePath.getName();
     }
 }

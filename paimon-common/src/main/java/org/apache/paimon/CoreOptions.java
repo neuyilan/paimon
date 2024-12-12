@@ -125,11 +125,18 @@ public class CoreOptions implements Serializable {
                                     .build());
 
     @ExcludeFromDocumentation("Internal use only")
-    public static final ConfigOption<String> PATH =
+    public static final ConfigOption<String> WAREHOUSE_TABLE_PATH =
             key("path")
                     .stringType()
                     .noDefaultValue()
                     .withDescription("The file path of this table in the filesystem.");
+
+    @ExcludeFromDocumentation("Internal use only")
+    public static final ConfigOption<String> WAREHOUSE_ROOT_PATH =
+            key("warehouse.root-path")
+                    .stringType()
+                    .noDefaultValue()
+                    .withDescription("The file path of the warehouse in the filesystem.");
 
     public static final ConfigOption<String> BRANCH =
             key("branch").stringType().defaultValue("main").withDescription("Specify branch name.");
@@ -1514,6 +1521,43 @@ public class CoreOptions implements Serializable {
                     .noDefaultValue()
                     .withDescription("The serialized refresh handler of materialized table.");
 
+    public static final ConfigOption<String> MULTI_LOCATIONS =
+            key("multi.locations")
+                    .stringType()
+                    .noDefaultValue()
+                    .withDescription(
+                            "This table currently supports multiple location storage paths, "
+                                    + "where multiple paths are separated by commas.");
+
+    public static final ConfigOption<String> DEFAULT_WRITE_LOCATION =
+            key("default.write.location")
+                    .stringType()
+                    .noDefaultValue()
+                    .withDescription(
+                            "The location where the data of this table is currently written."
+                                    + "This value must be one of "
+                                    + MULTI_LOCATIONS.key());
+
+    public static final ConfigOption<String> FS_OSS_ENDPOINT =
+            key("fs.oss.endpoint")
+                    .stringType()
+                    .noDefaultValue()
+                    .withDescription("The endpoint of the OSS service.");
+
+    public static final ConfigOption<String> FS_OSS_ACCESSKEY_ID =
+            key("fs.oss.accessKeyId")
+                    .stringType()
+                    .noDefaultValue()
+                    .withDescription("The access key id of the OSS service.");
+
+    public static final ConfigOption<String> FS_OSS_ACCESSKEY_SECRET =
+            key("fs.oss.accessKeySecret")
+                    .stringType()
+                    .noDefaultValue()
+                    .withDescription("The access key secret of the OSS service.");
+
+    // todo@houliang, support s3
+
     private final Options options;
 
     public CoreOptions(Map<String, String> options) {
@@ -1556,11 +1600,19 @@ public class CoreOptions implements Serializable {
     }
 
     public static Path path(Map<String, String> options) {
-        return new Path(options.get(PATH.key()));
+        return new Path(options.get(WAREHOUSE_TABLE_PATH.key()));
     }
 
     public static Path path(Options options) {
-        return new Path(options.get(PATH));
+        return new Path(options.get(WAREHOUSE_TABLE_PATH));
+    }
+
+    public static Path warehouseRootPath(Map<String, String> options) {
+        return new Path(options.get(WAREHOUSE_ROOT_PATH.key()));
+    }
+
+    public static Path warehouseRootPath(Options options) {
+        return new Path(options.get(WAREHOUSE_ROOT_PATH));
     }
 
     public TableType type() {
@@ -2350,6 +2402,14 @@ public class CoreOptions implements Serializable {
 
     public boolean asyncFileWrite() {
         return options.get(ASYNC_FILE_WRITE);
+    }
+
+    public String getDefaultWriteLocation() {
+        return options.get(DEFAULT_WRITE_LOCATION);
+    }
+
+    public String getWarehouseRootPath() {
+        return options.get(WAREHOUSE_ROOT_PATH);
     }
 
     public boolean statsDenseStore() {

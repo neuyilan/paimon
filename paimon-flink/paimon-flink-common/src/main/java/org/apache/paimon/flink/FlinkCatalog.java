@@ -132,7 +132,7 @@ import static org.apache.paimon.CoreOptions.MATERIALIZED_TABLE_REFRESH_HANDLER_B
 import static org.apache.paimon.CoreOptions.MATERIALIZED_TABLE_REFRESH_HANDLER_DESCRIPTION;
 import static org.apache.paimon.CoreOptions.MATERIALIZED_TABLE_REFRESH_MODE;
 import static org.apache.paimon.CoreOptions.MATERIALIZED_TABLE_REFRESH_STATUS;
-import static org.apache.paimon.CoreOptions.PATH;
+import static org.apache.paimon.CoreOptions.WAREHOUSE_TABLE_PATH;
 import static org.apache.paimon.catalog.Catalog.LAST_UPDATE_TIME_PROP;
 import static org.apache.paimon.catalog.Catalog.NUM_FILES_PROP;
 import static org.apache.paimon.catalog.Catalog.NUM_ROWS_PROP;
@@ -526,7 +526,7 @@ public class FlinkCatalog extends AbstractCatalog {
         }
 
         // remove table path
-        String path = options.remove(PATH.key());
+        String path = options.remove(WAREHOUSE_TABLE_PATH.key());
         if (path != null) {
             Path expectedPath = catalog.getTableLocation(identifier);
             if (!new Path(path).equals(expectedPath)) {
@@ -855,7 +855,7 @@ public class FlinkCatalog extends AbstractCatalog {
                 continue;
             }
 
-            if (PATH.key().equalsIgnoreCase(key)) {
+            if (WAREHOUSE_TABLE_PATH.key().equalsIgnoreCase(key)) {
                 throw new IllegalArgumentException("Illegal table path in table options: " + value);
             }
 

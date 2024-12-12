@@ -130,7 +130,7 @@ public abstract class SchemaEvolutionTableTestBase {
         tablePath = new Path(TraceableFileIO.SCHEME + "://" + tempDir.toString());
         fileIO = FileIOFinder.find(tablePath);
         commitUser = UUID.randomUUID().toString();
-        tableConfig.set(CoreOptions.PATH, tablePath.toString());
+        tableConfig.set(CoreOptions.WAREHOUSE_TABLE_PATH, tablePath.toString());
         tableConfig.set(CoreOptions.BUCKET, 1);
     }
 

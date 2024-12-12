@@ -22,9 +22,9 @@ import org.apache.paimon.CoreOptions;
 import org.apache.paimon.KeyValue;
 import org.apache.paimon.KeyValueFileStore;
 import org.apache.paimon.fs.FileIO;
-import org.apache.paimon.fs.Path;
 import org.apache.paimon.iceberg.IcebergOptions;
 import org.apache.paimon.iceberg.PrimaryKeyIcebergCommitCallback;
+import org.apache.paimon.io.PathProvider;
 import org.apache.paimon.manifest.ManifestCacheFilter;
 import org.apache.paimon.mergetree.compact.LookupMergeFunction;
 import org.apache.paimon.mergetree.compact.MergeFunctionFactory;
@@ -56,16 +56,16 @@ class PrimaryKeyFileStoreTable extends AbstractFileStoreTable {
 
     private transient KeyValueFileStore lazyStore;
 
-    PrimaryKeyFileStoreTable(FileIO fileIO, Path path, TableSchema tableSchema) {
-        this(fileIO, path, tableSchema, CatalogEnvironment.empty());
+    PrimaryKeyFileStoreTable(FileIO fileIO, PathProvider pathProvider, TableSchema tableSchema) {
+        this(fileIO, pathProvider, tableSchema, CatalogEnvironment.empty());
     }
 
     PrimaryKeyFileStoreTable(
             FileIO fileIO,
-            Path path,
+            PathProvider pathProvider,
             TableSchema tableSchema,
             CatalogEnvironment catalogEnvironment) {
-        super(fileIO, path, tableSchema, catalogEnvironment);
+        super(fileIO, pathProvider, tableSchema, catalogEnvironment);
     }
 
     @Override

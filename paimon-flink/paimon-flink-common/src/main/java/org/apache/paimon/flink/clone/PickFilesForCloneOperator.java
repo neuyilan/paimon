@@ -110,7 +110,10 @@ public class PickFilesForCloneOperator extends AbstractStreamOperator<CloneFileI
                 ImmutableMap.copyOf(
                         Iterables.filter(
                                 tableSchema.options().entrySet(),
-                                entry -> !Objects.equals(entry.getKey(), CoreOptions.PATH.key()))),
+                                entry ->
+                                        !Objects.equals(
+                                                entry.getKey(),
+                                                CoreOptions.WAREHOUSE_TABLE_PATH.key()))),
                 tableSchema.comment());
     }
 

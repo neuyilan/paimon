@@ -67,6 +67,10 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import static org.apache.paimon.CoreOptions.DEFAULT_WRITE_LOCATION;
+import static org.apache.paimon.CoreOptions.FS_OSS_ACCESSKEY_ID;
+import static org.apache.paimon.CoreOptions.FS_OSS_ACCESSKEY_SECRET;
+import static org.apache.paimon.CoreOptions.FS_OSS_ENDPOINT;
 import static org.apache.paimon.CoreOptions.LOG_CHANGELOG_MODE;
 import static org.apache.paimon.CoreOptions.LOG_CONSISTENCY;
 import static org.apache.paimon.CoreOptions.SCAN_MODE;
@@ -181,6 +185,14 @@ public abstract class AbstractFlinkTableFactory
                 Options.fromMap(context.getCatalogTable().getOptions()), new FlinkFileIOLoader());
     }
 
+    void addMultiLocationProperties(CatalogContext context, Map<String, String> options) {
+        context.options().set(DEFAULT_WRITE_LOCATION, options.get(DEFAULT_WRITE_LOCATION.key()));
+        // OSS specific properties
+        context.options().set(FS_OSS_ENDPOINT, options.get(FS_OSS_ENDPOINT.key()));
+        context.options().set(FS_OSS_ACCESSKEY_ID, options.get(FS_OSS_ACCESSKEY_ID.key()));
+        context.options().set(FS_OSS_ACCESSKEY_SECRET, options.get(FS_OSS_ACCESSKEY_SECRET.key()));
+    }
+
     Table buildPaimonTable(DynamicTableFactory.Context context) {
         CatalogTable origin = context.getCatalogTable().getOrigin();
         Table table;
@@ -203,6 +215,8 @@ public abstract class AbstractFlinkTableFactory
             fileStoreTable = (FileStoreTable) ((DataCatalogTable) origin).table();
         } else if (flinkCatalog == null) {
             // In case Paimon is directly used as a Flink connector, instead of through catalog.
+            CatalogContext catalogContext = createCatalogContext(context);
+            addMultiLocationProperties(catalogContext, newOptions);
             fileStoreTable = FileStoreTableFactory.create(createCatalogContext(context));
         } else {
             // In cases like materialized table, the Paimon table might not be DataCatalogTable,

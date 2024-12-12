@@ -598,7 +598,8 @@ public abstract class AbstractCatalog implements Catalog {
     }
 
     private void validateCustomTablePath(Map<String, String> options) {
-        if (!allowCustomTablePath() && options.containsKey(CoreOptions.PATH.key())) {
+        if (!allowCustomTablePath()
+                && options.containsKey(CoreOptions.WAREHOUSE_TABLE_PATH.key())) {
             throw new UnsupportedOperationException(
                     String.format(
                             "The current catalog %s does not support specifying the table path when creating a table.",

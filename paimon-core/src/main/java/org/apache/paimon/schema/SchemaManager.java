@@ -237,7 +237,6 @@ public class SchemaManager implements Serializable {
                             primaryKeys,
                             options,
                             schema.comment());
-
             // validate table from creating table
             FileStoreTableFactory.create(fileIO, tableRoot, newSchema).store();
 
@@ -887,7 +886,7 @@ public class SchemaManager implements Serializable {
     }
 
     public static void checkAlterTablePath(String key) {
-        if (CoreOptions.PATH.key().equalsIgnoreCase(key)) {
+        if (CoreOptions.WAREHOUSE_TABLE_PATH.key().equalsIgnoreCase(key)) {
             throw new UnsupportedOperationException("Change path is not supported yet.");
         }
     }

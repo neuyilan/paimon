@@ -19,6 +19,7 @@
 package org.apache.paimon.io;
 
 import org.apache.paimon.annotation.VisibleForTesting;
+import org.apache.paimon.data.BinaryRow;
 import org.apache.paimon.fs.Path;
 
 import javax.annotation.concurrent.ThreadSafe;
@@ -32,6 +33,8 @@ public class DataFilePathFactory {
 
     public static final String INDEX_PATH_SUFFIX = ".index";
 
+    public static BinaryRow partition;
+    public static int bucket;
     private final Path parent;
     private final String uuid;
 
@@ -79,6 +82,10 @@ public class DataFilePathFactory {
     }
 
     public Path toPath(String fileName) {
+        return new Path(parent + "/" + fileName);
+    }
+
+    public Path toPath(String fileName, String location) {
         return new Path(parent + "/" + fileName);
     }
 
