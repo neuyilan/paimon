@@ -186,11 +186,18 @@ public abstract class AbstractFlinkTableFactory
     }
 
     void addMultiLocationProperties(CatalogContext context, Map<String, String> options) {
-        context.options().set(DEFAULT_WRITE_LOCATION, options.get(DEFAULT_WRITE_LOCATION.key()));
-        // OSS specific properties
-        context.options().set(FS_OSS_ENDPOINT, options.get(FS_OSS_ENDPOINT.key()));
-        context.options().set(FS_OSS_ACCESSKEY_ID, options.get(FS_OSS_ACCESSKEY_ID.key()));
-        context.options().set(FS_OSS_ACCESSKEY_SECRET, options.get(FS_OSS_ACCESSKEY_SECRET.key()));
+        if (options.containsKey(DEFAULT_WRITE_LOCATION.key())
+                && options.get(DEFAULT_WRITE_LOCATION.key()) != null) {
+            context.options()
+                    .set(DEFAULT_WRITE_LOCATION, options.get(DEFAULT_WRITE_LOCATION.key()));
+
+            // TODO@houliangqi, need to check the properties
+            // OSS specific properties
+            context.options().set(FS_OSS_ENDPOINT, options.get(FS_OSS_ENDPOINT.key()));
+            context.options().set(FS_OSS_ACCESSKEY_ID, options.get(FS_OSS_ACCESSKEY_ID.key()));
+            context.options()
+                    .set(FS_OSS_ACCESSKEY_SECRET, options.get(FS_OSS_ACCESSKEY_SECRET.key()));
+        }
     }
 
     Table buildPaimonTable(DynamicTableFactory.Context context) {

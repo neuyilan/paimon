@@ -23,6 +23,7 @@ import org.apache.paimon.fs.Path;
 import org.jetbrains.annotations.TestOnly;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Provides paths for table operations based on warehouse, default write locations and read
@@ -92,5 +93,37 @@ public class PathProvider implements Serializable {
 
     public String getTableName() {
         return tableName;
+    }
+
+    @Override
+    public String toString() {
+        return "PathProvider{"
+                + " warehouseRootPath="
+                + warehouseRootPath
+                + ", defaultWriteRootPath="
+                + defaultWriteRootPath
+                + ", databaseName='"
+                + databaseName
+                + '\''
+                + ", tableName='"
+                + tableName
+                + '\''
+                + "}";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        PathProvider provider = (PathProvider) o;
+        return Objects.equals(warehouseRootPath, provider.warehouseRootPath)
+                && Objects.equals(defaultWriteRootPath, provider.defaultWriteRootPath)
+                && Objects.equals(databaseName, provider.databaseName)
+                && Objects.equals(tableName, provider.tableName);
     }
 }
