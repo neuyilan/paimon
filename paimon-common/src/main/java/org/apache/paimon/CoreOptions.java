@@ -125,7 +125,7 @@ public class CoreOptions implements Serializable {
                                     .build());
 
     @ExcludeFromDocumentation("Internal use only")
-    public static final ConfigOption<String> WAREHOUSE_TABLE_PATH =
+    public static final ConfigOption<String> PATH =
             key("path")
                     .stringType()
                     .noDefaultValue()
@@ -1600,11 +1600,11 @@ public class CoreOptions implements Serializable {
     }
 
     public static Path path(Map<String, String> options) {
-        return new Path(options.get(WAREHOUSE_TABLE_PATH.key()));
+        return new Path(options.get(PATH.key()));
     }
 
     public static Path path(Options options) {
-        return new Path(options.get(WAREHOUSE_TABLE_PATH));
+        return new Path(options.get(PATH));
     }
 
     public static Path warehouseRootPath(Map<String, String> options) {

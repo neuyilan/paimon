@@ -155,7 +155,7 @@ public class TestAppendFileStore extends AppendOnlyFileStore {
         FileIO fileIO = FileIOFinder.find(new Path(root));
         SchemaManager schemaManage = new SchemaManager(new LocalFileIO(), path);
 
-        options.put(CoreOptions.WAREHOUSE_TABLE_PATH.key(), root);
+        options.put(CoreOptions.PATH.key(), root);
         TableSchema tableSchema =
                 SchemaUtils.forceCommit(
                         schemaManage,

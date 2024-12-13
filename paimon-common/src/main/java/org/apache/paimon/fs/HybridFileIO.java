@@ -26,7 +26,11 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class HybirdFileIO implements FileIO {
+/**
+ * A hybrid implementation of {@link FileIO} that supports multiple file system schemas. It
+ * dynamically selects the appropriate {@link FileIO} based on the URI scheme of the given path.
+ */
+public class HybridFileIO implements FileIO {
 
     private static final long serialVersionUID = 1L;
 
@@ -108,7 +112,7 @@ public class HybirdFileIO implements FileIO {
     private <T> T wrap(Func<T> func) throws IOException {
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         try {
-            Thread.currentThread().setContextClassLoader(HybirdFileIO.class.getClassLoader());
+            Thread.currentThread().setContextClassLoader(HybridFileIO.class.getClassLoader());
             return func.apply();
         } finally {
             Thread.currentThread().setContextClassLoader(cl);

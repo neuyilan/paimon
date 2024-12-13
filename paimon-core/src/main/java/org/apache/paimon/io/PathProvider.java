@@ -23,6 +23,10 @@ import org.apache.paimon.fs.Path;
 
 import static org.apache.paimon.catalog.Catalog.DB_SUFFIX;
 
+/**
+ * Provides paths for table operations based on warehouse, default write locations and read
+ * location.
+ */
 public class PathProvider {
     // the same as the warehouse path;
     private final String warehouseRootPath;

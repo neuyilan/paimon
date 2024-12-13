@@ -52,7 +52,7 @@ public class PrimaryKeyTableColumnTypeFileMetaTest extends ColumnTypeFileMetaTes
     @Override
     protected FileStoreTable createFileStoreTable(Map<Long, TableSchema> tableSchemas) {
         SchemaManager schemaManager = new TestingSchemaManager(tablePath, tableSchemas);
-        return new PrimaryKeyFileStoreTable(fileIO, tablePath, schemaManager.latest().get()) {
+        return new PrimaryKeyFileStoreTable(fileIO, pathProvider, schemaManager.latest().get()) {
             @Override
             public SchemaManager schemaManager() {
                 return schemaManager;

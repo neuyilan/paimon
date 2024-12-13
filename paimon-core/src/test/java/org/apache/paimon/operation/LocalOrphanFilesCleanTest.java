@@ -684,7 +684,7 @@ public class LocalOrphanFilesCleanTest {
     }
 
     private FileStoreTable createFileStoreTable(RowType rowType, Options conf) throws Exception {
-        conf.set(CoreOptions.WAREHOUSE_TABLE_PATH, tablePath.toString());
+        conf.set(CoreOptions.PATH, tablePath.toString());
         conf.set(CoreOptions.BUCKET, RANDOM.nextInt(3) + 1);
         TableSchema tableSchema =
                 SchemaUtils.forceCommit(

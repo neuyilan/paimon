@@ -23,6 +23,7 @@ import org.apache.paimon.FileStore;
 import org.apache.paimon.Snapshot;
 import org.apache.paimon.fs.FileIO;
 import org.apache.paimon.fs.Path;
+import org.apache.paimon.io.PathProvider;
 import org.apache.paimon.manifest.IndexManifestEntry;
 import org.apache.paimon.manifest.ManifestCacheFilter;
 import org.apache.paimon.manifest.ManifestEntry;
@@ -118,6 +119,10 @@ public abstract class DelegatedFileStoreTable implements FileStoreTable {
     @Override
     public FileIO fileIO() {
         return wrapped.fileIO();
+    }
+
+    public PathProvider pathProvider() {
+        return wrapped.pathProvider();
     }
 
     @Override

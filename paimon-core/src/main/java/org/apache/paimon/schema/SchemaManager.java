@@ -886,7 +886,7 @@ public class SchemaManager implements Serializable {
     }
 
     public static void checkAlterTablePath(String key) {
-        if (CoreOptions.WAREHOUSE_TABLE_PATH.key().equalsIgnoreCase(key)) {
+        if (CoreOptions.PATH.key().equalsIgnoreCase(key)) {
             throw new UnsupportedOperationException("Change path is not supported yet.");
         }
     }

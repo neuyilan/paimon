@@ -24,6 +24,7 @@ import org.apache.paimon.fs.FileIO;
 import org.apache.paimon.fs.FileIOFinder;
 import org.apache.paimon.fs.Path;
 import org.apache.paimon.fs.local.LocalFileIO;
+import org.apache.paimon.io.PathProvider;
 import org.apache.paimon.manifest.PartitionEntry;
 import org.apache.paimon.options.Options;
 import org.apache.paimon.schema.Schema;
@@ -52,6 +53,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /** Tests for {@link FallbackReadFileStoreTable}. */
 public class FallbackReadFileStoreTableTest {
+    protected static final String TEST_DB = "testDb";
+    protected static final String TEST_TABLE = "testTable";
     private static final RowType ROW_TYPE =
             RowType.of(
                     new DataType[] {
@@ -66,10 +69,20 @@ public class FallbackReadFileStoreTableTest {
     private String commitUser;
 
     private FileIO fileIO;
+    protected PathProvider pathProvider;
 
     @BeforeEach
     public void before() {
-        tablePath = new Path(TraceableFileIO.SCHEME + "://" + tempDir.toString());
+        tablePath =
+                new Path(
+                        TraceableFileIO.SCHEME
+                                + "://"
+                                + TEST_DB
+                                + "/"
+                                + TEST_TABLE
+                                + "/"
+                                + tempDir.toString());
+        pathProvider = new PathProvider(TraceableFileIO.SCHEME + "://", null, TEST_DB, TEST_TABLE);
         commitUser = UUID.randomUUID().toString();
         fileIO = FileIOFinder.find(tablePath);
     }
@@ -163,7 +176,7 @@ public class FallbackReadFileStoreTableTest {
                                 Collections.emptyList(),
                                 Collections.emptyMap(),
                                 ""));
-        return new AppendOnlyFileStoreTable(fileIO, tablePath, tableSchema);
+        return new AppendOnlyFileStoreTable(fileIO, pathProvider, tableSchema);
     }
 
     private FileStoreTable createTableFromBranch(FileStoreTable baseTable, String branchName) {
@@ -171,7 +184,7 @@ public class FallbackReadFileStoreTableTest {
         options.set(CoreOptions.BRANCH, branchName);
         return new AppendOnlyFileStoreTable(
                         fileIO,
-                        tablePath,
+                        pathProvider,
                         new SchemaManager(fileIO, tablePath, branchName).latest().get())
                 .copy(options.toMap());
     }

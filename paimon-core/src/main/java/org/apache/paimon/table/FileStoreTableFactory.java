@@ -21,7 +21,7 @@ package org.apache.paimon.table;
 import org.apache.paimon.CoreOptions;
 import org.apache.paimon.catalog.CatalogContext;
 import org.apache.paimon.fs.FileIO;
-import org.apache.paimon.fs.HybirdFileIO;
+import org.apache.paimon.fs.HybridFileIO;
 import org.apache.paimon.fs.Path;
 import org.apache.paimon.io.PathProvider;
 import org.apache.paimon.options.Options;
@@ -31,7 +31,7 @@ import org.apache.paimon.utils.StringUtils;
 
 import java.util.Optional;
 
-import static org.apache.paimon.CoreOptions.WAREHOUSE_TABLE_PATH;
+import static org.apache.paimon.CoreOptions.PATH;
 import static org.apache.paimon.catalog.Catalog.DB_SUFFIX;
 import static org.apache.paimon.utils.Preconditions.checkArgument;
 
@@ -40,14 +40,14 @@ public class FileStoreTableFactory {
 
     public static FileStoreTable create(CatalogContext context) {
         FileIO fileIO;
-        fileIO = new HybirdFileIO();
+        fileIO = new HybridFileIO();
         fileIO.configure(context);
         return create(fileIO, context.options());
     }
 
     public static FileStoreTable create(FileIO fileIO, Path path) {
         Options options = new Options();
-        options.set(WAREHOUSE_TABLE_PATH, path.toString());
+        options.set(PATH, path.toString());
         return create(fileIO, options);
     }
 

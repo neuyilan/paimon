@@ -28,6 +28,7 @@ import org.apache.paimon.fs.FileIO;
 import org.apache.paimon.fs.FileIOFinder;
 import org.apache.paimon.fs.Path;
 import org.apache.paimon.io.DataFileMeta;
+import org.apache.paimon.io.PathProvider;
 import org.apache.paimon.mergetree.compact.ConcatRecordReader;
 import org.apache.paimon.options.Options;
 import org.apache.paimon.reader.ReaderSupplier;
@@ -81,6 +82,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /** Base test class for schema evolution in {@link FileStoreTable}. */
 public abstract class SchemaEvolutionTableTestBase {
+    protected static final String TEST_DB = "testDb";
+    protected static final String TEST_TABLE = "testTable";
     protected static final List<DataField> SCHEMA_0_FIELDS =
             Arrays.asList(
                     new DataField(0, "a", VarCharType.STRING_TYPE),
@@ -124,13 +127,23 @@ public abstract class SchemaEvolutionTableTestBase {
     protected final Options tableConfig = new Options();
 
     @TempDir java.nio.file.Path tempDir;
+    protected PathProvider pathProvider;
 
     @BeforeEach
     public void before() throws Exception {
-        tablePath = new Path(TraceableFileIO.SCHEME + "://" + tempDir.toString());
+        tablePath =
+                new Path(
+                        TraceableFileIO.SCHEME
+                                + "://"
+                                + TEST_DB
+                                + "/"
+                                + TEST_TABLE
+                                + "/"
+                                + tempDir.toString());
+        pathProvider = new PathProvider(TraceableFileIO.SCHEME + "://", null, TEST_DB, TEST_TABLE);
         fileIO = FileIOFinder.find(tablePath);
         commitUser = UUID.randomUUID().toString();
-        tableConfig.set(CoreOptions.WAREHOUSE_TABLE_PATH, tablePath.toString());
+        tableConfig.set(CoreOptions.PATH, tablePath.toString());
         tableConfig.set(CoreOptions.BUCKET, 1);
     }
 

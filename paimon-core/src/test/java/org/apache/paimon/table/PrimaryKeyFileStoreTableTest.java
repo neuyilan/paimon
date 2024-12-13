@@ -2187,7 +2187,7 @@ public class PrimaryKeyFileStoreTableTest extends FileStoreTableTestBase {
     @Override
     protected FileStoreTable overwriteTestFileStoreTable() throws Exception {
         Options conf = new Options();
-        conf.set(CoreOptions.WAREHOUSE_TABLE_PATH, tablePath.toString());
+        conf.set(CoreOptions.PATH, tablePath.toString());
         conf.set(BUCKET, 1);
         TableSchema tableSchema =
                 SchemaUtils.forceCommit(
@@ -2198,14 +2198,15 @@ public class PrimaryKeyFileStoreTableTest extends FileStoreTableTestBase {
                                 Arrays.asList("pk", "pt0", "pt1"),
                                 conf.toMap(),
                                 ""));
-        return new PrimaryKeyFileStoreTable(FileIOFinder.find(tablePath), tablePath, tableSchema);
+        return new PrimaryKeyFileStoreTable(
+                FileIOFinder.find(tablePath), pathProvider, tableSchema);
     }
 
     @Override
     protected FileStoreTable createFileStoreTable(Consumer<Options> configure, RowType rowType)
             throws Exception {
         Options options = new Options();
-        options.set(CoreOptions.WAREHOUSE_TABLE_PATH, tablePath.toString());
+        options.set(CoreOptions.PATH, tablePath.toString());
         options.set(BUCKET, 1);
         configure.accept(options);
         TableSchema tableSchema =
@@ -2217,7 +2218,8 @@ public class PrimaryKeyFileStoreTableTest extends FileStoreTableTestBase {
                                 Arrays.asList("pt", "a"),
                                 options.toMap(),
                                 ""));
-        return new PrimaryKeyFileStoreTable(FileIOFinder.find(tablePath), tablePath, tableSchema);
+        return new PrimaryKeyFileStoreTable(
+                FileIOFinder.find(tablePath), pathProvider, tableSchema);
     }
 
     @Override
@@ -2229,7 +2231,7 @@ public class PrimaryKeyFileStoreTableTest extends FileStoreTableTestBase {
     private FileStoreTable createFileStoreTable(
             String branch, Consumer<Options> configure, RowType rowType) throws Exception {
         Options options = new Options();
-        options.set(CoreOptions.WAREHOUSE_TABLE_PATH, tablePath.toString());
+        options.set(CoreOptions.PATH, tablePath.toString());
         options.set(BUCKET, 1);
         options.set(BRANCH, branch);
         configure.accept(options);
@@ -2244,6 +2246,7 @@ public class PrimaryKeyFileStoreTableTest extends FileStoreTableTestBase {
                         latestSchema.primaryKeys(),
                         options.toMap(),
                         latestSchema.comment());
-        return new PrimaryKeyFileStoreTable(FileIOFinder.find(tablePath), tablePath, tableSchema);
+        return new PrimaryKeyFileStoreTable(
+                FileIOFinder.find(tablePath), pathProvider, tableSchema);
     }
 }

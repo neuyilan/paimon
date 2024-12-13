@@ -467,7 +467,7 @@ public class WriterOperatorTest {
     private FileStoreTable createFileStoreTable(
             RowType rowType, List<String> primaryKeys, List<String> partitionKeys, Options conf)
             throws Exception {
-        conf.set(CoreOptions.WAREHOUSE_TABLE_PATH, tablePath.toString());
+        conf.set(CoreOptions.PATH, tablePath.toString());
         SchemaManager schemaManager = new SchemaManager(LocalFileIO.create(), tablePath);
         schemaManager.createTable(
                 new Schema(rowType.getFields(), partitionKeys, primaryKeys, conf.toMap(), ""));

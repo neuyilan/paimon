@@ -57,7 +57,7 @@ import java.util.stream.Collectors;
 import static org.apache.paimon.CoreOptions.BUCKET;
 import static org.apache.paimon.CoreOptions.BUCKET_KEY;
 import static org.apache.paimon.CoreOptions.FILE_FORMAT;
-import static org.apache.paimon.CoreOptions.WAREHOUSE_TABLE_PATH;
+import static org.apache.paimon.CoreOptions.PATH;
 import static org.apache.paimon.flink.LogicalTypeConversion.toDataType;
 import static org.apache.paimon.utils.FailingFileIO.retryArtificialException;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -159,7 +159,7 @@ public class FlinkBatchJobPartitionMarkdoneITCase extends CatalogITCaseBase {
             throws Exception {
         Options options = new Options();
         options.set(BUCKET, 3);
-        options.set(WAREHOUSE_TABLE_PATH, getTempDirPath());
+        options.set(PATH, getTempDirPath());
         options.set(FILE_FORMAT, CoreOptions.FILE_FORMAT_AVRO);
         options.set(CoreOptions.PARTITION_MARK_DONE_WHEN_END_INPUT.key(), "true");
 

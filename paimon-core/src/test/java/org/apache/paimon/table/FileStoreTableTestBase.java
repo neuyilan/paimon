@@ -37,6 +37,7 @@ import org.apache.paimon.fs.FileStatus;
 import org.apache.paimon.fs.Path;
 import org.apache.paimon.fs.local.LocalFileIO;
 import org.apache.paimon.io.DataFileMeta;
+import org.apache.paimon.io.PathProvider;
 import org.apache.paimon.mergetree.compact.ConcatRecordReader;
 import org.apache.paimon.operation.FileStoreTestUtils;
 import org.apache.paimon.options.MemorySize;
@@ -126,6 +127,8 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 public abstract class FileStoreTableTestBase {
 
     protected static final String BRANCH_NAME = "branch1";
+    protected static final String TEST_DB = "testDb";
+    protected static final String TEST_TABLE = "testTable";
 
     protected static final RowType ROW_TYPE =
             RowType.of(
@@ -185,10 +188,20 @@ public abstract class FileStoreTableTestBase {
 
     protected Path tablePath;
     protected String commitUser;
+    protected PathProvider pathProvider;
 
     @BeforeEach
     public void before() {
-        tablePath = new Path(TraceableFileIO.SCHEME + "://" + tempDir.toString());
+        tablePath =
+                new Path(
+                        TraceableFileIO.SCHEME
+                                + "://"
+                                + TEST_DB
+                                + "/"
+                                + TEST_TABLE
+                                + "/"
+                                + tempDir.toString());
+        pathProvider = new PathProvider(TraceableFileIO.SCHEME + "://", null, TEST_DB, TEST_TABLE);
         commitUser = UUID.randomUUID().toString();
     }
 
@@ -1582,14 +1595,12 @@ public abstract class FileStoreTableTestBase {
     @Test
     public void testSchemaPathOption() throws Exception {
         String fakePath = "fake path";
-        FileStoreTable table =
-                createFileStoreTable(conf -> conf.set(CoreOptions.WAREHOUSE_TABLE_PATH, fakePath));
-        String originSchemaPath =
-                table.schema().options().get(CoreOptions.WAREHOUSE_TABLE_PATH.key());
+        FileStoreTable table = createFileStoreTable(conf -> conf.set(CoreOptions.PATH, fakePath));
+        String originSchemaPath = table.schema().options().get(CoreOptions.PATH.key());
         assertThat(originSchemaPath).isEqualTo(fakePath);
         // reset PATH of schema option to table location
         table = table.copy(Collections.emptyMap());
-        String schemaPath = table.schema().options().get(CoreOptions.WAREHOUSE_TABLE_PATH.key());
+        String schemaPath = table.schema().options().get(CoreOptions.PATH.key());
         String tablePath = table.location().toString();
         assertThat(schemaPath).isEqualTo(tablePath);
     }

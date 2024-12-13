@@ -86,8 +86,8 @@ import java.util.OptionalLong;
 import java.util.SortedMap;
 import java.util.function.BiConsumer;
 
+import static org.apache.paimon.CoreOptions.PATH;
 import static org.apache.paimon.CoreOptions.WAREHOUSE_ROOT_PATH;
-import static org.apache.paimon.CoreOptions.WAREHOUSE_TABLE_PATH;
 import static org.apache.paimon.utils.Preconditions.checkArgument;
 
 /** Abstract {@link FileStoreTable}. */
@@ -113,10 +113,10 @@ abstract class AbstractFileStoreTable implements FileStoreTable {
             CatalogEnvironment catalogEnvironment) {
         this.fileIO = fileIO;
         this.pathProvider = pathProvider;
-        if (!tableSchema.options().containsKey(WAREHOUSE_TABLE_PATH.key())) {
+        if (!tableSchema.options().containsKey(PATH.key())) {
             // make sure table is always available
             Map<String, String> newOptions = new HashMap<>(tableSchema.options());
-            newOptions.put(WAREHOUSE_TABLE_PATH.key(), pathProvider.getWarehouseRootPath());
+            newOptions.put(PATH.key(), pathProvider.getWarehouseRootPath());
             tableSchema = tableSchema.copy(newOptions);
         }
         this.tableSchema = tableSchema;
@@ -335,7 +335,7 @@ abstract class AbstractFileStoreTable implements FileStoreTable {
         Options newOptions = Options.fromMap(options);
 
         // set warehouse table path always
-        newOptions.set(WAREHOUSE_TABLE_PATH, pathProvider.getWarehouseTablePathString());
+        newOptions.set(PATH, pathProvider.getWarehouseTablePathString());
 
         // set warehouse root path always
         newOptions.set(WAREHOUSE_ROOT_PATH, pathProvider.getWarehouseRootPath());
@@ -408,7 +408,12 @@ abstract class AbstractFileStoreTable implements FileStoreTable {
 
     @Override
     public Path location() {
-        return path;
+        return pathProvider.getWarehouseTablePath();
+    }
+
+    @Override
+    public PathProvider pathProvider() {
+        return pathProvider;
     }
 
     @Override

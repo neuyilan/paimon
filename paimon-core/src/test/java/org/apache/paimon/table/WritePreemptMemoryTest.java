@@ -93,7 +93,7 @@ public class WritePreemptMemoryTest extends FileStoreTableTestBase {
             throws Exception {
         Options options = new Options();
         options.set(CoreOptions.BUCKET, 1);
-        options.set(CoreOptions.WAREHOUSE_TABLE_PATH, tablePath.toString());
+        options.set(CoreOptions.PATH, tablePath.toString());
         // Run with minimal memory to ensure a more intense preempt
         // Currently a writer needs at least one page
         int pages = 10;
@@ -109,7 +109,7 @@ public class WritePreemptMemoryTest extends FileStoreTableTestBase {
                                 Arrays.asList("pt", "a"),
                                 options.toMap(),
                                 ""));
-        return new PrimaryKeyFileStoreTable(FileIOFinder.find(tablePath), tablePath, schema);
+        return new PrimaryKeyFileStoreTable(FileIOFinder.find(tablePath), pathProvider, schema);
     }
 
     @Override
@@ -117,7 +117,7 @@ public class WritePreemptMemoryTest extends FileStoreTableTestBase {
             throws Exception {
         Options options = new Options();
         options.set(CoreOptions.BUCKET, 1);
-        options.set(CoreOptions.WAREHOUSE_TABLE_PATH, tablePath.toString());
+        options.set(CoreOptions.PATH, tablePath.toString());
         // Run with minimal memory to ensure a more intense preempt
         // Currently a writer needs at least one page
         int pages = 10;
@@ -134,13 +134,13 @@ public class WritePreemptMemoryTest extends FileStoreTableTestBase {
                                 Arrays.asList("pt", "a"),
                                 options.toMap(),
                                 ""));
-        return new PrimaryKeyFileStoreTable(FileIOFinder.find(tablePath), tablePath, schema);
+        return new PrimaryKeyFileStoreTable(FileIOFinder.find(tablePath), pathProvider, schema);
     }
 
     @Override
     protected FileStoreTable overwriteTestFileStoreTable() throws Exception {
         Options conf = new Options();
-        conf.set(CoreOptions.WAREHOUSE_TABLE_PATH, tablePath.toString());
+        conf.set(CoreOptions.PATH, tablePath.toString());
         conf.set(CoreOptions.BUCKET, 1);
         // Run with minimal memory to ensure a more intense preempt
         // Currently a writer needs at least one page
@@ -156,6 +156,6 @@ public class WritePreemptMemoryTest extends FileStoreTableTestBase {
                                 Arrays.asList("pk", "pt0", "pt1"),
                                 conf.toMap(),
                                 ""));
-        return new PrimaryKeyFileStoreTable(FileIOFinder.find(tablePath), tablePath, schema);
+        return new PrimaryKeyFileStoreTable(FileIOFinder.find(tablePath), pathProvider, schema);
     }
 }
