@@ -639,6 +639,7 @@ public class FlinkCatalogTest {
 
         Map<String, String> expected = got.getOptions();
         expected.remove("path");
+        expected.remove("warehouse.root-path");
         expected.remove(FlinkCatalogOptions.REGISTER_TIMEOUT.key());
         assertThat(catalogTable.getOptions()).isEqualTo(expected);
     }

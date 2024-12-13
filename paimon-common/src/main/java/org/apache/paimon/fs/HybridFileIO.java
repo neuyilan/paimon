@@ -37,13 +37,14 @@ public class HybridFileIO implements FileIO {
     protected Options options;
 
     private Map<String, FileIO> fileIOMap;
+    private volatile FileIO fallbackFileIO;
 
     @Override
     public boolean isObjectStore() {
         if (options.get(CoreOptions.DEFAULT_WRITE_LOCATION) != null
-                        && (options.get(CoreOptions.DEFAULT_WRITE_LOCATION).startsWith("oss://"))
-                || (options.get(CoreOptions.DEFAULT_WRITE_LOCATION).startsWith("s3://"))) {
-
+                && ((options.get(CoreOptions.DEFAULT_WRITE_LOCATION).startsWith("oss://")
+                        || (options.get(CoreOptions.DEFAULT_WRITE_LOCATION)
+                                .startsWith("s3://"))))) {
             return true;
         }
         return false;
@@ -97,6 +98,18 @@ public class HybridFileIO implements FileIO {
 
     private FileIO fileIO(Path path) throws IOException {
         String schema = path.toUri().getScheme();
+        if (schema == null) {
+            if (fallbackFileIO == null) {
+                synchronized (this) {
+                    if (fallbackFileIO == null) {
+                        CatalogContext catalogContext = CatalogContext.create(options);
+                        fallbackFileIO = FileIO.get(path, catalogContext);
+                    }
+                }
+            }
+            return fallbackFileIO;
+        }
+
         if (!fileIOMap.containsKey(schema)) {
             synchronized (this) {
                 if (!fileIOMap.containsKey(schema)) {
