@@ -20,23 +20,40 @@ package org.apache.paimon.io;
 
 import org.apache.paimon.fs.Path;
 
+import org.jetbrains.annotations.TestOnly;
+
 /**
  * Provides paths for table operations based on warehouse, default write locations and read
  * location.
  */
 public class PathProvider {
     // the same as the warehouse path;
-    private final String warehouseRootPath;
+    private final Path warehouseRootPath;
     // the default write path
-    private final String defaultWriteRootPath;
+    private final Path defaultWriteRootPath;
     // the database name;
     private final String databaseName;
     // the table name;
     private final String tableName;
 
+    @TestOnly
+    public PathProvider(Path path) {
+        this.warehouseRootPath = path.getParent().getParent();
+        this.defaultWriteRootPath = null;
+        this.databaseName = path.getParent().getName();
+        this.tableName = path.getName();
+    }
+
+    public PathProvider(Path path, Path defaultWriteRootPath) {
+        this.warehouseRootPath = path.getParent().getParent();
+        this.defaultWriteRootPath = defaultWriteRootPath;
+        this.databaseName = path.getParent().getName();
+        this.tableName = path.getName();
+    }
+
     public PathProvider(
-            String warehouseRootPath,
-            String defaultWriteRootPath,
+            Path warehouseRootPath,
+            Path defaultWriteRootPath,
             String databaseName,
             String tableName) {
         this.warehouseRootPath = warehouseRootPath;
@@ -46,29 +63,25 @@ public class PathProvider {
     }
 
     public Path tableWritePath() {
-        String location = defaultWriteRootPath != null ? defaultWriteRootPath : warehouseRootPath;
+        Path location = defaultWriteRootPath != null ? defaultWriteRootPath : warehouseRootPath;
         return new Path(location + "/" + databaseName + "/" + tableName);
     }
 
-    public Path tableReadPath(String readLocation) {
-        String location = readLocation != null ? readLocation : warehouseRootPath;
+    public Path tableReadPath(Path readLocation) {
+        Path location = readLocation != null ? readLocation : warehouseRootPath;
         return new Path(location + "/" + databaseName + "/" + tableName);
     }
 
     public String getWarehouseTablePathString() {
-        return warehouseRootPath + "/" + databaseName + "/" + tableName;
+        return getWarehouseTablePath().toString();
     }
 
     public Path getWarehouseTablePath() {
-        return new Path(getWarehouseTablePathString());
+        return new Path(warehouseRootPath, new Path(databaseName + "/" + tableName));
     }
 
-    public String getWarehouseRootPath() {
-        return warehouseRootPath;
-    }
-
-    public String getDefaultWriteRootPath() {
-        return defaultWriteRootPath;
+    public String getWarehouseRootPathString() {
+        return warehouseRootPath.toString();
     }
 
     public String getDatabaseName() {

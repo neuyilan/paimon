@@ -192,16 +192,8 @@ public abstract class FileStoreTableTestBase {
 
     @BeforeEach
     public void before() {
-        tablePath =
-                new Path(
-                        TraceableFileIO.SCHEME
-                                + "://"
-                                + TEST_DB
-                                + "/"
-                                + TEST_TABLE
-                                + "/"
-                                + tempDir.toString());
-        pathProvider = new PathProvider(TraceableFileIO.SCHEME + "://", null, TEST_DB, TEST_TABLE);
+        tablePath = new Path(TraceableFileIO.SCHEME + "://" + tempDir.toString());
+        pathProvider = new PathProvider(tablePath);
         commitUser = UUID.randomUUID().toString();
     }
 

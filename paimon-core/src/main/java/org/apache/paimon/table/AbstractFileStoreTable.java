@@ -116,7 +116,7 @@ abstract class AbstractFileStoreTable implements FileStoreTable {
         if (!tableSchema.options().containsKey(PATH.key())) {
             // make sure table is always available
             Map<String, String> newOptions = new HashMap<>(tableSchema.options());
-            newOptions.put(PATH.key(), pathProvider.getWarehouseRootPath());
+            newOptions.put(PATH.key(), pathProvider.getWarehouseTablePathString());
             tableSchema = tableSchema.copy(newOptions);
         }
         this.tableSchema = tableSchema;
@@ -338,7 +338,7 @@ abstract class AbstractFileStoreTable implements FileStoreTable {
         newOptions.set(PATH, pathProvider.getWarehouseTablePathString());
 
         // set warehouse root path always
-        newOptions.set(WAREHOUSE_ROOT_PATH, pathProvider.getWarehouseRootPath());
+        newOptions.set(WAREHOUSE_ROOT_PATH, pathProvider.getWarehouseRootPathString());
 
         // set dynamic options with default values
         CoreOptions.setDefaultValues(newOptions);

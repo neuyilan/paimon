@@ -131,16 +131,8 @@ public abstract class SchemaEvolutionTableTestBase {
 
     @BeforeEach
     public void before() throws Exception {
-        tablePath =
-                new Path(
-                        TraceableFileIO.SCHEME
-                                + "://"
-                                + TEST_DB
-                                + "/"
-                                + TEST_TABLE
-                                + "/"
-                                + tempDir.toString());
-        pathProvider = new PathProvider(TraceableFileIO.SCHEME + "://", null, TEST_DB, TEST_TABLE);
+        tablePath = new Path(TraceableFileIO.SCHEME + "://" + tempDir.toString());
+        pathProvider = new PathProvider(tablePath);
         fileIO = FileIOFinder.find(tablePath);
         commitUser = UUID.randomUUID().toString();
         tableConfig.set(CoreOptions.PATH, tablePath.toString());
