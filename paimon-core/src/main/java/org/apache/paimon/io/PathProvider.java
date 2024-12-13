@@ -22,11 +22,13 @@ import org.apache.paimon.fs.Path;
 
 import org.jetbrains.annotations.TestOnly;
 
+import java.io.Serializable;
+
 /**
  * Provides paths for table operations based on warehouse, default write locations and read
  * location.
  */
-public class PathProvider {
+public class PathProvider implements Serializable {
     // the same as the warehouse path;
     private final Path warehouseRootPath;
     // the default write path
