@@ -18,10 +18,7 @@
 
 package org.apache.paimon.io;
 
-import org.apache.paimon.catalog.AbstractCatalog;
 import org.apache.paimon.fs.Path;
-
-import static org.apache.paimon.catalog.Catalog.DB_SUFFIX;
 
 /**
  * Provides paths for table operations based on warehouse, default write locations and read
@@ -50,21 +47,20 @@ public class PathProvider {
 
     public Path tableWritePath() {
         String location = defaultWriteRootPath != null ? defaultWriteRootPath : warehouseRootPath;
-        return new Path(AbstractCatalog.newDatabasePath(location, databaseName), tableName);
+        return new Path(location + "/" + databaseName + "/" + tableName);
     }
 
     public Path tableReadPath(String readLocation) {
         String location = readLocation != null ? readLocation : warehouseRootPath;
-        return new Path(AbstractCatalog.newDatabasePath(location, databaseName), tableName);
+        return new Path(location + "/" + databaseName + "/" + tableName);
     }
 
     public String getWarehouseTablePathString() {
-        return defaultWriteRootPath + "/" + databaseName + DB_SUFFIX + "/" + tableName;
+        return warehouseRootPath + "/" + databaseName + "/" + tableName;
     }
 
     public Path getWarehouseTablePath() {
-        return new Path(
-                AbstractCatalog.newDatabasePath(defaultWriteRootPath, databaseName), tableName);
+        return new Path(getWarehouseTablePathString());
     }
 
     public String getWarehouseRootPath() {

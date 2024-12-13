@@ -32,7 +32,6 @@ import org.apache.paimon.utils.StringUtils;
 import java.util.Optional;
 
 import static org.apache.paimon.CoreOptions.PATH;
-import static org.apache.paimon.catalog.Catalog.DB_SUFFIX;
 import static org.apache.paimon.utils.Preconditions.checkArgument;
 
 /** Factory to create {@link FileStoreTable}. */
@@ -85,11 +84,16 @@ public class FileStoreTableFactory {
             Options dynamicOptions,
             CatalogEnvironment catalogEnvironment) {
         CoreOptions coreOptions = CoreOptions.fromMap(tableSchema.options());
+        String warehouseRootPath = coreOptions.getWarehouseRootPath();
+        String defaultWriteLocation = coreOptions.getDefaultWriteLocation();
+        if (warehouseRootPath == null) {
+            warehouseRootPath = getWarehousePathString(tablePath);
+        }
         PathProvider pathProvider =
                 new PathProvider(
-                        coreOptions.getWarehouseRootPath(),
-                        coreOptions.getDefaultWriteLocation(),
-                        getDatabaseName(tablePath),
+                        warehouseRootPath,
+                        defaultWriteLocation,
+                        getDatabaseFullName(tablePath),
                         getTableName(tablePath));
 
         FileStoreTable table =
@@ -133,12 +137,12 @@ public class FileStoreTableFactory {
         return table.copy(dynamicOptions.toMap());
     }
 
-    private static String getDatabaseName(Path tablePath) {
-        String dbName = tablePath.getParent().getName();
-        if (dbName.endsWith(DB_SUFFIX)) {
-            return dbName.substring(0, dbName.length() - DB_SUFFIX.length());
-        }
-        return null;
+    private static String getDatabaseFullName(Path tablePath) {
+        return tablePath.getParent().getName();
+    }
+
+    private static String getWarehousePathString(Path tablePath) {
+        return tablePath.getParent().getParent().toString();
     }
 
     private static String getTableName(Path tablePath) {
