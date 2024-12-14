@@ -223,7 +223,7 @@ public class KeyValueFileReadWriteTest {
         Path path = new Path(pathStr);
         FileStorePathFactory pathFactory =
                 new FileStorePathFactory(
-                        path,
+                        new TablePathProvider(path),
                         RowType.of(),
                         CoreOptions.PARTITION_DEFAULT_NAME.defaultValue(),
                         format,
@@ -243,7 +243,7 @@ public class KeyValueFileReadWriteTest {
         pathFactoryMap.put(
                 CoreOptions.FILE_FORMAT.defaultValue().toString(),
                 new FileStorePathFactory(
-                        path,
+                        new TablePathProvider(path),
                         RowType.of(),
                         CoreOptions.PARTITION_DEFAULT_NAME.defaultValue(),
                         CoreOptions.FILE_FORMAT.defaultValue().toString(),

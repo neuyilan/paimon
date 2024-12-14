@@ -2199,7 +2199,7 @@ public class PrimaryKeyFileStoreTableTest extends FileStoreTableTestBase {
                                 conf.toMap(),
                                 ""));
         return new PrimaryKeyFileStoreTable(
-                FileIOFinder.find(tablePath), pathProvider, tableSchema);
+                FileIOFinder.find(tablePath), tablePathProvider, tableSchema);
     }
 
     @Override
@@ -2219,7 +2219,7 @@ public class PrimaryKeyFileStoreTableTest extends FileStoreTableTestBase {
                                 options.toMap(),
                                 ""));
         return new PrimaryKeyFileStoreTable(
-                FileIOFinder.find(tablePath), pathProvider, tableSchema);
+                FileIOFinder.find(tablePath), tablePathProvider, tableSchema);
     }
 
     @Override
@@ -2247,6 +2247,6 @@ public class PrimaryKeyFileStoreTableTest extends FileStoreTableTestBase {
                         options.toMap(),
                         latestSchema.comment());
         return new PrimaryKeyFileStoreTable(
-                FileIOFinder.find(tablePath), pathProvider, tableSchema);
+                FileIOFinder.find(tablePath), tablePathProvider, tableSchema);
     }
 }

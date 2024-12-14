@@ -21,7 +21,7 @@ package org.apache.paimon.table;
 import org.apache.paimon.CoreOptions;
 import org.apache.paimon.fs.FileIO;
 import org.apache.paimon.fs.Path;
-import org.apache.paimon.io.PathProvider;
+import org.apache.paimon.io.TablePathProvider;
 import org.apache.paimon.schema.SchemaManager;
 import org.apache.paimon.table.source.DataTableScan;
 import org.apache.paimon.table.source.snapshot.SnapshotReader;
@@ -57,5 +57,5 @@ public interface DataTable extends InnerTable {
 
     FileIO fileIO();
 
-    PathProvider pathProvider();
+    TablePathProvider pathProvider();
 }

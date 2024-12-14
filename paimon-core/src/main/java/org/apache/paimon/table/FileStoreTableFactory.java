@@ -23,7 +23,7 @@ import org.apache.paimon.catalog.CatalogContext;
 import org.apache.paimon.fs.FileIO;
 import org.apache.paimon.fs.HybridFileIO;
 import org.apache.paimon.fs.Path;
-import org.apache.paimon.io.PathProvider;
+import org.apache.paimon.io.TablePathProvider;
 import org.apache.paimon.options.Options;
 import org.apache.paimon.schema.SchemaManager;
 import org.apache.paimon.schema.TableSchema;
@@ -90,10 +90,11 @@ public class FileStoreTableFactory {
         if (coreOptions.getDefaultWriteLocation() != null) {
             defaultWriteLocationPath = new Path(defaultWriteLocation);
         }
-        PathProvider pathProvider = new PathProvider(tablePath, defaultWriteLocationPath);
+        TablePathProvider tablePathProvider =
+                new TablePathProvider(tablePath, defaultWriteLocationPath);
         FileStoreTable table =
                 createWithoutFallbackBranch(
-                        fileIO, pathProvider, tableSchema, dynamicOptions, catalogEnvironment);
+                        fileIO, tablePathProvider, tableSchema, dynamicOptions, catalogEnvironment);
 
         Options options = new Options(table.options());
         String fallbackBranch = options.get(CoreOptions.SCAN_FALLBACK_BRANCH);
@@ -110,7 +111,11 @@ public class FileStoreTableFactory {
                     fallbackBranch);
             FileStoreTable fallbackTable =
                     createWithoutFallbackBranch(
-                            fileIO, pathProvider, schema.get(), branchOptions, catalogEnvironment);
+                            fileIO,
+                            tablePathProvider,
+                            schema.get(),
+                            branchOptions,
+                            catalogEnvironment);
             table = new FallbackReadFileStoreTable(table, fallbackTable);
         }
 
@@ -119,16 +124,16 @@ public class FileStoreTableFactory {
 
     public static FileStoreTable createWithoutFallbackBranch(
             FileIO fileIO,
-            PathProvider pathProvider,
+            TablePathProvider tablePathProvider,
             TableSchema tableSchema,
             Options dynamicOptions,
             CatalogEnvironment catalogEnvironment) {
         FileStoreTable table =
                 tableSchema.primaryKeys().isEmpty()
                         ? new AppendOnlyFileStoreTable(
-                                fileIO, pathProvider, tableSchema, catalogEnvironment)
+                                fileIO, tablePathProvider, tableSchema, catalogEnvironment)
                         : new PrimaryKeyFileStoreTable(
-                                fileIO, pathProvider, tableSchema, catalogEnvironment);
+                                fileIO, tablePathProvider, tableSchema, catalogEnvironment);
         return table.copy(dynamicOptions.toMap());
     }
 

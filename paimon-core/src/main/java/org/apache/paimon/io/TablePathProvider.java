@@ -29,7 +29,7 @@ import java.util.Objects;
  * Provides paths for table operations based on warehouse, default write locations and read
  * location.
  */
-public class PathProvider implements Serializable {
+public class TablePathProvider implements Serializable {
     // the same as the warehouse path;
     private final Path warehouseRootPath;
     // the default write path
@@ -40,21 +40,21 @@ public class PathProvider implements Serializable {
     private final String tableName;
 
     @TestOnly
-    public PathProvider(Path path) {
+    public TablePathProvider(Path path) {
         this.warehouseRootPath = path.getParent().getParent();
         this.defaultWriteRootPath = null;
         this.databaseName = path.getParent().getName();
         this.tableName = path.getName();
     }
 
-    public PathProvider(Path path, Path defaultWriteRootPath) {
+    public TablePathProvider(Path path, Path defaultWriteRootPath) {
         this.warehouseRootPath = path.getParent().getParent();
         this.defaultWriteRootPath = defaultWriteRootPath;
         this.databaseName = path.getParent().getName();
         this.tableName = path.getName();
     }
 
-    public PathProvider(
+    public TablePathProvider(
             Path warehouseRootPath,
             Path defaultWriteRootPath,
             String databaseName,
@@ -65,22 +65,38 @@ public class PathProvider implements Serializable {
         this.tableName = tableName;
     }
 
-    public Path tableWritePath() {
-        Path location = defaultWriteRootPath != null ? defaultWriteRootPath : warehouseRootPath;
-        return new Path(location + "/" + databaseName + "/" + tableName);
-    }
+    // public Path tableWritePath() {
+    //     Path location = defaultWriteRootPath != null ? defaultWriteRootPath : warehouseRootPath;
+    //     return new Path(location, new Path(databaseName + "/" + tableName));
+    // }
 
     public Path tableReadPath(Path readLocation) {
         Path location = readLocation != null ? readLocation : warehouseRootPath;
-        return new Path(location + "/" + databaseName + "/" + tableName);
+        return new Path(location, new Path(databaseName + "/" + tableName));
     }
 
-    public String getWarehouseTablePathString() {
-        return getWarehouseTablePath().toString();
+    public String getTableWritePathString() {
+        return getTableWritePath().toString();
     }
 
-    public Path getWarehouseTablePath() {
-        return new Path(warehouseRootPath, new Path(databaseName + "/" + tableName));
+    public Path getWarehouseRootPath() {
+        if (defaultWriteRootPath != null) {
+            return defaultWriteRootPath;
+        }
+        return warehouseRootPath;
+    }
+
+    public Path getTableWritePath() {
+        Path location = defaultWriteRootPath != null ? defaultWriteRootPath : warehouseRootPath;
+        return new Path(location, new Path(databaseName + "/" + tableName));
+    }
+
+    public Path getReleativeTableWritePath() {
+        return new Path(databaseName + "/" + tableName);
+    }
+
+    public Path getDefaultWriteRootPath() {
+        return defaultWriteRootPath != null ? defaultWriteRootPath : warehouseRootPath;
     }
 
     public String getWarehouseRootPathString() {
@@ -120,10 +136,15 @@ public class PathProvider implements Serializable {
             return false;
         }
 
-        PathProvider provider = (PathProvider) o;
+        TablePathProvider provider = (TablePathProvider) o;
         return Objects.equals(warehouseRootPath, provider.warehouseRootPath)
                 && Objects.equals(defaultWriteRootPath, provider.defaultWriteRootPath)
                 && Objects.equals(databaseName, provider.databaseName)
                 && Objects.equals(tableName, provider.tableName);
+    }
+
+    public TablePathProvider copy() {
+        return new TablePathProvider(
+                warehouseRootPath, defaultWriteRootPath, databaseName, tableName);
     }
 }

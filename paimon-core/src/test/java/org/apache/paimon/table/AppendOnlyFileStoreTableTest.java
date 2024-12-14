@@ -1101,7 +1101,7 @@ public class AppendOnlyFileStoreTableTest extends FileStoreTableTestBase {
                                 conf.toMap(),
                                 ""));
         return new AppendOnlyFileStoreTable(
-                FileIOFinder.find(tablePath), pathProvider, tableSchema);
+                FileIOFinder.find(tablePath), tablePathProvider, tableSchema);
     }
 
     @Override
@@ -1124,7 +1124,7 @@ public class AppendOnlyFileStoreTableTest extends FileStoreTableTestBase {
                                 conf.toMap(),
                                 ""));
         return new AppendOnlyFileStoreTable(
-                FileIOFinder.find(tablePath), pathProvider, tableSchema);
+                FileIOFinder.find(tablePath), tablePathProvider, tableSchema);
     }
 
     @Override
@@ -1141,7 +1141,7 @@ public class AppendOnlyFileStoreTableTest extends FileStoreTableTestBase {
                                 conf.toMap(),
                                 ""));
         return new AppendOnlyFileStoreTable(
-                FileIOFinder.find(tablePath), pathProvider, tableSchema);
+                FileIOFinder.find(tablePath), tablePathProvider, tableSchema);
     }
 
     protected FileStoreTable createUnawareBucketFileStoreTable(Consumer<Options> configure)
@@ -1160,7 +1160,7 @@ public class AppendOnlyFileStoreTableTest extends FileStoreTableTestBase {
                                 conf.toMap(),
                                 ""));
         return new AppendOnlyFileStoreTable(
-                FileIOFinder.find(tablePath), pathProvider, tableSchema);
+                FileIOFinder.find(tablePath), tablePathProvider, tableSchema);
     }
 
     protected FileStoreTable createUnawareBucketFileStoreTable(
@@ -1179,6 +1179,6 @@ public class AppendOnlyFileStoreTableTest extends FileStoreTableTestBase {
                                 conf.toMap(),
                                 ""));
         return new AppendOnlyFileStoreTable(
-                FileIOFinder.find(tablePath), pathProvider, tableSchema);
+                FileIOFinder.find(tablePath), tablePathProvider, tableSchema);
     }
 }

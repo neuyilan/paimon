@@ -35,6 +35,7 @@ import org.apache.paimon.fs.Path;
 import org.apache.paimon.fs.local.LocalFileIO;
 import org.apache.paimon.io.DataFileMeta;
 import org.apache.paimon.io.DataFilePathFactory;
+import org.apache.paimon.io.TablePathProvider;
 import org.apache.paimon.manifest.FileSource;
 import org.apache.paimon.memory.HeapMemorySegmentPool;
 import org.apache.paimon.memory.MemoryPoolFactory;
@@ -518,8 +519,14 @@ public class AppendOnlyWriterTest {
     }
 
     private DataFilePathFactory createPathFactory() {
+        TablePathProvider tablePathProvider = new TablePathProvider(new Path(tempDir.toString()));
         return new DataFilePathFactory(
-                new Path(tempDir + "/dt=" + PART + "/bucket-0"),
+                tablePathProvider.getDefaultWriteRootPath(),
+                new Path(
+                        tablePathProvider.getReleativeTableWritePath()
+                                + "/dt="
+                                + PART
+                                + "/bucket-0"),
                 CoreOptions.FILE_FORMAT.defaultValue().toString(),
                 CoreOptions.DATA_FILE_PREFIX.defaultValue(),
                 CoreOptions.CHANGELOG_FILE_PREFIX.defaultValue(),

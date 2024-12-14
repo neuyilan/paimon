@@ -28,7 +28,7 @@ import org.apache.paimon.fs.FileIO;
 import org.apache.paimon.fs.FileIOFinder;
 import org.apache.paimon.fs.Path;
 import org.apache.paimon.io.DataFileMeta;
-import org.apache.paimon.io.PathProvider;
+import org.apache.paimon.io.TablePathProvider;
 import org.apache.paimon.mergetree.compact.ConcatRecordReader;
 import org.apache.paimon.options.Options;
 import org.apache.paimon.reader.ReaderSupplier;
@@ -127,12 +127,12 @@ public abstract class SchemaEvolutionTableTestBase {
     protected final Options tableConfig = new Options();
 
     @TempDir java.nio.file.Path tempDir;
-    protected PathProvider pathProvider;
+    protected TablePathProvider tablePathProvider;
 
     @BeforeEach
     public void before() throws Exception {
         tablePath = new Path(TraceableFileIO.SCHEME + "://" + tempDir.toString());
-        pathProvider = new PathProvider(tablePath);
+        tablePathProvider = new TablePathProvider(tablePath);
         fileIO = FileIOFinder.find(tablePath);
         commitUser = UUID.randomUUID().toString();
         tableConfig.set(CoreOptions.PATH, tablePath.toString());

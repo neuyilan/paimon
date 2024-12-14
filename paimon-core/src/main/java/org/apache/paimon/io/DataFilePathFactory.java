@@ -19,7 +19,6 @@
 package org.apache.paimon.io;
 
 import org.apache.paimon.annotation.VisibleForTesting;
-import org.apache.paimon.data.BinaryRow;
 import org.apache.paimon.fs.Path;
 
 import javax.annotation.concurrent.ThreadSafe;
@@ -33,9 +32,10 @@ public class DataFilePathFactory {
 
     public static final String INDEX_PATH_SUFFIX = ".index";
 
-    public static BinaryRow partition;
-    public static int bucket;
+    private final Path defaultWriteRootPath;
+    private final Path relativeDataFilePath;
     private final Path parent;
+    private DataFilePathProvider dataFilePathProvider;
     private final String uuid;
 
     private final AtomicInteger pathCount;
@@ -46,13 +46,16 @@ public class DataFilePathFactory {
     private final String fileCompression;
 
     public DataFilePathFactory(
-            Path parent,
+            Path defaultWriteRootPath,
+            Path relativeDataFilePath,
+            // Path parent,
             String formatIdentifier,
             String dataFilePrefix,
             String changelogFilePrefix,
             boolean fileSuffixIncludeCompression,
             String fileCompression) {
-        this.parent = parent;
+        this.defaultWriteRootPath = defaultWriteRootPath;
+        this.relativeDataFilePath = relativeDataFilePath;
         this.uuid = UUID.randomUUID().toString();
         this.pathCount = new AtomicInteger(0);
         this.formatIdentifier = formatIdentifier;
@@ -60,6 +63,7 @@ public class DataFilePathFactory {
         this.changelogFilePrefix = changelogFilePrefix;
         this.fileSuffixIncludeCompression = fileSuffixIncludeCompression;
         this.fileCompression = fileCompression;
+        this.parent = new Path(this.defaultWriteRootPath, this.relativeDataFilePath);
     }
 
     public Path newPath() {
@@ -85,8 +89,9 @@ public class DataFilePathFactory {
         return new Path(parent + "/" + fileName);
     }
 
-    public Path toPath(String fileName, String location) {
-        return new Path(parent + "/" + fileName);
+    public Path toPath(Path rootLocation, String fileName) {
+        Path tmpParent = new Path(rootLocation, relativeDataFilePath);
+        return new Path(tmpParent + "/" + fileName);
     }
 
     @VisibleForTesting
