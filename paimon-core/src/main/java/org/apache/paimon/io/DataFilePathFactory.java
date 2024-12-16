@@ -35,7 +35,6 @@ public class DataFilePathFactory {
     private final Path defaultWriteRootPath;
     private final Path relativeDataFilePath;
     private final Path parent;
-    private DataFilePathProvider dataFilePathProvider;
     private final String uuid;
 
     private final AtomicInteger pathCount;
@@ -48,7 +47,6 @@ public class DataFilePathFactory {
     public DataFilePathFactory(
             Path defaultWriteRootPath,
             Path relativeDataFilePath,
-            // Path parent,
             String formatIdentifier,
             String dataFilePrefix,
             String changelogFilePrefix,
@@ -89,7 +87,11 @@ public class DataFilePathFactory {
         return new Path(parent + "/" + fileName);
     }
 
-    // used for read
+    /**
+     * @param rootLocation the root location of the file
+     * @param fileName the file name
+     * @return the path of the file
+     */
     public Path toPath(Path rootLocation, String fileName) {
         if (rootLocation == null || rootLocation.toString().isEmpty()) {
             return new Path(parent + "/" + fileName);

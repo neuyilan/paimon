@@ -163,6 +163,7 @@ public interface DeletionVector {
     interface Factory {
         Optional<DeletionVector> create(String fileName) throws IOException;
 
+        // @todo qihouliang
         // Optional<DeletionVector> create(Path dataRootLocation, String fileName) throws
         // IOException;
     }

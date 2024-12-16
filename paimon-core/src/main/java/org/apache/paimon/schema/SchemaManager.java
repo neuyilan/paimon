@@ -117,14 +117,9 @@ public class SchemaManager implements Serializable {
 
     public Optional<TableSchema> latest() {
         try {
-            Optional<TableSchema> schema =
-                    listVersionedFiles(fileIO, schemaDirectory(), SCHEMA_PREFIX)
-                            .reduce(Math::max)
-                            .map(this::schema);
-            return schema;
-            // return listVersionedFiles(fileIO, schemaDirectory(), SCHEMA_PREFIX)
-            //         .reduce(Math::max)
-            //         .map(this::schema);
+            return listVersionedFiles(fileIO, schemaDirectory(), SCHEMA_PREFIX)
+                    .reduce(Math::max)
+                    .map(this::schema);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }

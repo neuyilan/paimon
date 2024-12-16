@@ -33,7 +33,7 @@ import java.util.Objects;
 public class TablePathProvider implements Serializable {
     // the same as the warehouse path;
     private final @NotNull Path warehouseRootPath;
-    // the default write path
+    // the data file external path
     private final Path dataFileExternalPath;
     // the database name;
     private final String databaseName;
@@ -56,7 +56,7 @@ public class TablePathProvider implements Serializable {
     }
 
     public TablePathProvider(
-            Path warehouseRootPath,
+            @NotNull Path warehouseRootPath,
             Path dataFileExternalPath,
             String databaseName,
             String tableName) {
@@ -66,21 +66,9 @@ public class TablePathProvider implements Serializable {
         this.tableName = tableName;
     }
 
-    public Path tableReadPath(Path readLocation) {
-        Path location = readLocation != null ? readLocation : warehouseRootPath;
-        return new Path(location, new Path(databaseName + "/" + tableName));
-    }
-
     public String getTableWritePathString() {
         return getTableWritePath().toString();
     }
-
-    // public Path getWarehouseRootPath() {
-    //     if (dataFileExternalPath != null) {
-    //         return dataFileExternalPath;
-    //     }
-    //     return warehouseRootPath;
-    // }
 
     public Path getTableWritePath() {
         Path location = dataFileExternalPath != null ? dataFileExternalPath : warehouseRootPath;
@@ -109,10 +97,10 @@ public class TablePathProvider implements Serializable {
 
     @Override
     public String toString() {
-        return "PathProvider{"
+        return "TablePathProvider{"
                 + " warehouseRootPath="
                 + warehouseRootPath
-                + ", defaultWriteRootPath="
+                + ", dataFileExternalPath="
                 + dataFileExternalPath
                 + ", databaseName='"
                 + databaseName
@@ -132,11 +120,20 @@ public class TablePathProvider implements Serializable {
             return false;
         }
 
-        TablePathProvider provider = (TablePathProvider) o;
-        return Objects.equals(warehouseRootPath, provider.warehouseRootPath)
-                && Objects.equals(dataFileExternalPath, provider.dataFileExternalPath)
-                && Objects.equals(databaseName, provider.databaseName)
-                && Objects.equals(tableName, provider.tableName);
+        TablePathProvider that = (TablePathProvider) o;
+        return warehouseRootPath.equals(that.warehouseRootPath)
+                && Objects.equals(dataFileExternalPath, that.dataFileExternalPath)
+                && Objects.equals(databaseName, that.databaseName)
+                && Objects.equals(tableName, that.tableName);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = warehouseRootPath.hashCode();
+        result = 31 * result + Objects.hashCode(dataFileExternalPath);
+        result = 31 * result + Objects.hashCode(databaseName);
+        result = 31 * result + Objects.hashCode(tableName);
+        return result;
     }
 
     public TablePathProvider copy() {

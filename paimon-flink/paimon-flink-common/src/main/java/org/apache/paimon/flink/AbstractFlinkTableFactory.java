@@ -67,7 +67,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import static org.apache.paimon.CoreOptions.DATA_FILE_EXTERNAL_PATH;
 import static org.apache.paimon.CoreOptions.LOG_CHANGELOG_MODE;
 import static org.apache.paimon.CoreOptions.LOG_CONSISTENCY;
 import static org.apache.paimon.CoreOptions.SCAN_MODE;
@@ -182,16 +181,6 @@ public abstract class AbstractFlinkTableFactory
                 Options.fromMap(context.getCatalogTable().getOptions()), new FlinkFileIOLoader());
     }
 
-    void addMultiLocationProperties(CatalogContext context, Map<String, String> options) {
-        if (options.containsKey(DATA_FILE_EXTERNAL_PATH.key())
-                && options.get(DATA_FILE_EXTERNAL_PATH.key()) != null) {
-            context.options()
-                    .set(DATA_FILE_EXTERNAL_PATH, options.get(DATA_FILE_EXTERNAL_PATH.key()));
-
-            // TODO@houliangqi, need to check the properties
-        }
-    }
-
     Table buildPaimonTable(DynamicTableFactory.Context context) {
         CatalogTable origin = context.getCatalogTable().getOrigin();
         Table table;
@@ -215,7 +204,6 @@ public abstract class AbstractFlinkTableFactory
         } else if (flinkCatalog == null) {
             // In case Paimon is directly used as a Flink connector, instead of through catalog.
             CatalogContext catalogContext = createCatalogContext(context);
-            addMultiLocationProperties(catalogContext, newOptions);
             fileStoreTable = FileStoreTableFactory.create(createCatalogContext(context));
         } else {
             // In cases like materialized table, the Paimon table might not be DataCatalogTable,

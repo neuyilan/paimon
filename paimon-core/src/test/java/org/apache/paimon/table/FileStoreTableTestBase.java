@@ -127,9 +127,6 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 public abstract class FileStoreTableTestBase {
 
     protected static final String BRANCH_NAME = "branch1";
-    protected static final String TEST_DB = "testDb";
-    protected static final String TEST_TABLE = "testTable";
-
     protected static final RowType ROW_TYPE =
             RowType.of(
                     new DataType[] {

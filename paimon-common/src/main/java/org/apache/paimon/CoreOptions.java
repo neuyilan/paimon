@@ -1577,14 +1577,6 @@ public class CoreOptions implements Serializable {
         return new Path(options.get(PATH));
     }
 
-    public static Path warehouseRootPath(Map<String, String> options) {
-        return new Path(options.get(WAREHOUSE_ROOT_PATH.key()));
-    }
-
-    public static Path warehouseRootPath(Options options) {
-        return new Path(options.get(WAREHOUSE_ROOT_PATH));
-    }
-
     public TableType type() {
         return options.get(TYPE);
     }

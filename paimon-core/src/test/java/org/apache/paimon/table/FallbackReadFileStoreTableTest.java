@@ -53,8 +53,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /** Tests for {@link FallbackReadFileStoreTable}. */
 public class FallbackReadFileStoreTableTest {
-    protected static final String TEST_DB = "testDb";
-    protected static final String TEST_TABLE = "testTable";
     private static final RowType ROW_TYPE =
             RowType.of(
                     new DataType[] {

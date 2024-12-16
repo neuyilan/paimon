@@ -59,7 +59,6 @@ public class FileStorePathFactory {
 
     public FileStorePathFactory(
             TablePathProvider tablePathProvider,
-            // Path root,
             RowType partitionType,
             String defaultPartValue,
             String formatIdentifier,
@@ -69,7 +68,6 @@ public class FileStorePathFactory {
             boolean fileSuffixIncludeCompression,
             String fileCompression,
             @Nullable String dataFilePathDirectory) {
-        // this.root = root;
         this.dataFilePathDirectory = dataFilePathDirectory;
         this.uuid = UUID.randomUUID().toString();
 

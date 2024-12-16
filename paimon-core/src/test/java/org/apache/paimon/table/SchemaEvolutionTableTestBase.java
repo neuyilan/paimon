@@ -82,8 +82,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /** Base test class for schema evolution in {@link FileStoreTable}. */
 public abstract class SchemaEvolutionTableTestBase {
-    protected static final String TEST_DB = "testDb";
-    protected static final String TEST_TABLE = "testTable";
     protected static final List<DataField> SCHEMA_0_FIELDS =
             Arrays.asList(
                     new DataField(0, "a", VarCharType.STRING_TYPE),

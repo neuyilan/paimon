@@ -86,7 +86,7 @@ public class CdcRecordStoreWriteOperatorTest {
     }
 
     @Test
-    // @Timeout(30)
+    @Timeout(30)
     public void testAddColumn() throws Exception {
         RowType rowType =
                 RowType.of(
@@ -134,9 +134,6 @@ public class CdcRecordStoreWriteOperatorTest {
         runner.offer(expected);
         actual = runner.poll(1);
         assertThat(actual).isNull();
-
-        // add by qihouliang, need to delete.
-        Path tableRoot = table.location();
 
         SchemaManager schemaManager = new SchemaManager(table.fileIO(), table.location());
         schemaManager.commitChanges(SchemaChange.addColumn("v2", DataTypes.INT()));
