@@ -68,9 +68,6 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import static org.apache.paimon.CoreOptions.DATA_FILE_EXTERNAL_PATH;
-import static org.apache.paimon.CoreOptions.FS_OSS_ACCESSKEY_ID;
-import static org.apache.paimon.CoreOptions.FS_OSS_ACCESSKEY_SECRET;
-import static org.apache.paimon.CoreOptions.FS_OSS_ENDPOINT;
 import static org.apache.paimon.CoreOptions.LOG_CHANGELOG_MODE;
 import static org.apache.paimon.CoreOptions.LOG_CONSISTENCY;
 import static org.apache.paimon.CoreOptions.SCAN_MODE;
@@ -192,11 +189,6 @@ public abstract class AbstractFlinkTableFactory
                     .set(DATA_FILE_EXTERNAL_PATH, options.get(DATA_FILE_EXTERNAL_PATH.key()));
 
             // TODO@houliangqi, need to check the properties
-            // OSS specific properties
-            context.options().set(FS_OSS_ENDPOINT, options.get(FS_OSS_ENDPOINT.key()));
-            context.options().set(FS_OSS_ACCESSKEY_ID, options.get(FS_OSS_ACCESSKEY_ID.key()));
-            context.options()
-                    .set(FS_OSS_ACCESSKEY_SECRET, options.get(FS_OSS_ACCESSKEY_SECRET.key()));
         }
     }
 

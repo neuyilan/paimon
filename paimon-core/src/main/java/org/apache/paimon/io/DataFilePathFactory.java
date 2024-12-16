@@ -91,6 +91,9 @@ public class DataFilePathFactory {
 
     // used for read
     public Path toPath(Path rootLocation, String fileName) {
+        if (rootLocation == null || rootLocation.toString().isEmpty()) {
+            return new Path(parent + "/" + fileName);
+        }
         Path tmpParent = new Path(rootLocation, relativeDataFilePath);
         return new Path(tmpParent + "/" + fileName);
     }

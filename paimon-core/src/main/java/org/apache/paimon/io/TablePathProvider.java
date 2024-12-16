@@ -75,12 +75,12 @@ public class TablePathProvider implements Serializable {
         return getTableWritePath().toString();
     }
 
-    public Path getWarehouseRootPath() {
-        if (dataFileExternalPath != null) {
-            return dataFileExternalPath;
-        }
-        return warehouseRootPath;
-    }
+    // public Path getWarehouseRootPath() {
+    //     if (dataFileExternalPath != null) {
+    //         return dataFileExternalPath;
+    //     }
+    //     return warehouseRootPath;
+    // }
 
     public Path getTableWritePath() {
         Path location = dataFileExternalPath != null ? dataFileExternalPath : warehouseRootPath;

@@ -108,7 +108,8 @@ public class RollingFileWriterTest {
                                         new FileIndexOptions(),
                                         FileSource.APPEND,
                                         true,
-                                        statsDenseStore),
+                                        statsDenseStore,
+                                        tablePathProvider.getTableWritePath()),
                         TARGET_FILE_SIZE);
     }
 

@@ -77,7 +77,15 @@ public class KeyValueFileReadWriteTest {
     public void testReadNonExistentFile() {
         KeyValueFileReaderFactory readerFactory =
                 createReaderFactory(tempDir.toString(), "avro", null, null);
-        assertThatThrownBy(() -> readerFactory.createRecordReader(0, "dummy_file.avro", 1, 0))
+        TablePathProvider tablePathProvider = new TablePathProvider(new Path(tempDir.toString()));
+        assertThatThrownBy(
+                        () ->
+                                readerFactory.createRecordReader(
+                                        0,
+                                        "dummy_file.avro",
+                                        1,
+                                        0,
+                                        tablePathProvider.getTableWritePath()))
                 .hasMessageContaining(
                         "you can configure 'snapshot.time-retained' option with a larger value.");
     }
@@ -311,7 +319,8 @@ public class KeyValueFileReadWriteTest {
                                     meta.schemaId(),
                                     meta.fileName(),
                                     meta.fileSize(),
-                                    meta.level()));
+                                    meta.level(),
+                                    meta.getDataRootLocation()));
             while (actualKvsIterator.hasNext()) {
                 assertThat(expectedIterator.hasNext()).isTrue();
                 KeyValue actualKv = actualKvsIterator.next();

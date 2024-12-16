@@ -162,5 +162,8 @@ public interface DeletionVector {
     /** Interface to create {@link DeletionVector}. */
     interface Factory {
         Optional<DeletionVector> create(String fileName) throws IOException;
+
+        // Optional<DeletionVector> create(Path dataRootLocation, String fileName) throws
+        // IOException;
     }
 }

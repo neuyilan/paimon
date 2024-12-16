@@ -366,6 +366,7 @@ public class DataFileMeta {
         return rowCount;
     }
 
+    @Nullable
     public Path getDataRootLocation() {
         return dataRootLocation;
     }
@@ -527,8 +528,8 @@ public class DataFileMeta {
 
     public List<Path> collectFiles(DataFilePathFactory pathFactory) {
         List<Path> paths = new ArrayList<>();
-        paths.add(pathFactory.toPath(fileName));
-        extraFiles.forEach(f -> paths.add(pathFactory.toPath(f)));
+        paths.add(pathFactory.toPath(dataRootLocation, fileName));
+        extraFiles.forEach(f -> paths.add(pathFactory.toPath(dataRootLocation, f)));
         return paths;
     }
 
