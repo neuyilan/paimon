@@ -521,7 +521,7 @@ public class AppendOnlyWriterTest {
     private DataFilePathFactory createPathFactory() {
         TablePathProvider tablePathProvider = new TablePathProvider(new Path(tempDir.toString()));
         return new DataFilePathFactory(
-                tablePathProvider.getDefaultWriteRootPath(),
+                tablePathProvider.getDataFileExternalPath(),
                 new Path(
                         tablePathProvider.getReleativeTableWritePath()
                                 + "/dt="

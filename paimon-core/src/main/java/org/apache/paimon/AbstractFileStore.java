@@ -83,7 +83,7 @@ abstract class AbstractFileStore<T> implements FileStore<T> {
     @Nullable private final SegmentsCache<Path> writeManifestCache;
     @Nullable private SegmentsCache<Path> readManifestCache;
     @Nullable private Cache<Path, Snapshot> snapshotCache;
-    private TablePathProvider tablePathProvider;
+    private final TablePathProvider tablePathProvider;
 
     protected AbstractFileStore(
             FileIO fileIO,

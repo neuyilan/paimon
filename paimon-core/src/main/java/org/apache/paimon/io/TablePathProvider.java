@@ -20,6 +20,7 @@ package org.apache.paimon.io;
 
 import org.apache.paimon.fs.Path;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.TestOnly;
 
 import java.io.Serializable;
@@ -31,9 +32,9 @@ import java.util.Objects;
  */
 public class TablePathProvider implements Serializable {
     // the same as the warehouse path;
-    private final Path warehouseRootPath;
+    private final @NotNull Path warehouseRootPath;
     // the default write path
-    private final Path defaultWriteRootPath;
+    private final Path dataFileExternalPath;
     // the database name;
     private final String databaseName;
     // the table name;
@@ -42,33 +43,28 @@ public class TablePathProvider implements Serializable {
     @TestOnly
     public TablePathProvider(Path path) {
         this.warehouseRootPath = path.getParent().getParent();
-        this.defaultWriteRootPath = null;
+        this.dataFileExternalPath = null;
         this.databaseName = path.getParent().getName();
         this.tableName = path.getName();
     }
 
-    public TablePathProvider(Path path, Path defaultWriteRootPath) {
+    public TablePathProvider(Path path, Path dataFileExternalPath) {
         this.warehouseRootPath = path.getParent().getParent();
-        this.defaultWriteRootPath = defaultWriteRootPath;
+        this.dataFileExternalPath = dataFileExternalPath;
         this.databaseName = path.getParent().getName();
         this.tableName = path.getName();
     }
 
     public TablePathProvider(
             Path warehouseRootPath,
-            Path defaultWriteRootPath,
+            Path dataFileExternalPath,
             String databaseName,
             String tableName) {
         this.warehouseRootPath = warehouseRootPath;
-        this.defaultWriteRootPath = defaultWriteRootPath;
+        this.dataFileExternalPath = dataFileExternalPath;
         this.databaseName = databaseName;
         this.tableName = tableName;
     }
-
-    // public Path tableWritePath() {
-    //     Path location = defaultWriteRootPath != null ? defaultWriteRootPath : warehouseRootPath;
-    //     return new Path(location, new Path(databaseName + "/" + tableName));
-    // }
 
     public Path tableReadPath(Path readLocation) {
         Path location = readLocation != null ? readLocation : warehouseRootPath;
@@ -80,14 +76,14 @@ public class TablePathProvider implements Serializable {
     }
 
     public Path getWarehouseRootPath() {
-        if (defaultWriteRootPath != null) {
-            return defaultWriteRootPath;
+        if (dataFileExternalPath != null) {
+            return dataFileExternalPath;
         }
         return warehouseRootPath;
     }
 
     public Path getTableWritePath() {
-        Path location = defaultWriteRootPath != null ? defaultWriteRootPath : warehouseRootPath;
+        Path location = dataFileExternalPath != null ? dataFileExternalPath : warehouseRootPath;
         return new Path(location, new Path(databaseName + "/" + tableName));
     }
 
@@ -95,8 +91,8 @@ public class TablePathProvider implements Serializable {
         return new Path(databaseName + "/" + tableName);
     }
 
-    public Path getDefaultWriteRootPath() {
-        return defaultWriteRootPath != null ? defaultWriteRootPath : warehouseRootPath;
+    public Path getDataFileExternalPath() {
+        return dataFileExternalPath != null ? dataFileExternalPath : warehouseRootPath;
     }
 
     public String getWarehouseRootPathString() {
@@ -117,7 +113,7 @@ public class TablePathProvider implements Serializable {
                 + " warehouseRootPath="
                 + warehouseRootPath
                 + ", defaultWriteRootPath="
-                + defaultWriteRootPath
+                + dataFileExternalPath
                 + ", databaseName='"
                 + databaseName
                 + '\''
@@ -138,13 +134,13 @@ public class TablePathProvider implements Serializable {
 
         TablePathProvider provider = (TablePathProvider) o;
         return Objects.equals(warehouseRootPath, provider.warehouseRootPath)
-                && Objects.equals(defaultWriteRootPath, provider.defaultWriteRootPath)
+                && Objects.equals(dataFileExternalPath, provider.dataFileExternalPath)
                 && Objects.equals(databaseName, provider.databaseName)
                 && Objects.equals(tableName, provider.tableName);
     }
 
     public TablePathProvider copy() {
         return new TablePathProvider(
-                warehouseRootPath, defaultWriteRootPath, databaseName, tableName);
+                warehouseRootPath, dataFileExternalPath, databaseName, tableName);
     }
 }

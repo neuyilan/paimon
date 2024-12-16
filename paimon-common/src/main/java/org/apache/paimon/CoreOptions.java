@@ -1521,42 +1521,12 @@ public class CoreOptions implements Serializable {
                     .noDefaultValue()
                     .withDescription("The serialized refresh handler of materialized table.");
 
-    public static final ConfigOption<String> MULTI_LOCATIONS =
-            key("multi.locations")
+    public static final ConfigOption<String> DATA_FILE_EXTERNAL_PATH =
+            key("data-file.external-path")
                     .stringType()
                     .noDefaultValue()
                     .withDescription(
-                            "This table currently supports multiple location storage paths, "
-                                    + "where multiple paths are separated by commas.");
-
-    public static final ConfigOption<String> DEFAULT_WRITE_LOCATION =
-            key("default.write.location")
-                    .stringType()
-                    .noDefaultValue()
-                    .withDescription(
-                            "The location where the data of this table is currently written."
-                                    + "This value must be one of "
-                                    + MULTI_LOCATIONS.key());
-
-    public static final ConfigOption<String> FS_OSS_ENDPOINT =
-            key("fs.oss.endpoint")
-                    .stringType()
-                    .noDefaultValue()
-                    .withDescription("The endpoint of the OSS service.");
-
-    public static final ConfigOption<String> FS_OSS_ACCESSKEY_ID =
-            key("fs.oss.accessKeyId")
-                    .stringType()
-                    .noDefaultValue()
-                    .withDescription("The access key id of the OSS service.");
-
-    public static final ConfigOption<String> FS_OSS_ACCESSKEY_SECRET =
-            key("fs.oss.accessKeySecret")
-                    .stringType()
-                    .noDefaultValue()
-                    .withDescription("The access key secret of the OSS service.");
-
-    // todo@houliang, support s3
+                            "The location where the data of this table is currently written.");
 
     private final Options options;
 
@@ -2404,12 +2374,19 @@ public class CoreOptions implements Serializable {
         return options.get(ASYNC_FILE_WRITE);
     }
 
-    public String getDefaultWriteLocation() {
-        return options.get(DEFAULT_WRITE_LOCATION);
+    public String getDataFileExternalPath() {
+        return options.get(DATA_FILE_EXTERNAL_PATH);
     }
 
     public String getWarehouseRootPath() {
         return options.get(WAREHOUSE_ROOT_PATH);
+    }
+
+    public String getDataWriteRootPath() {
+        if (getDataFileExternalPath() == null || getDataFileExternalPath().isEmpty()) {
+            return getWarehouseRootPath();
+        }
+        return getDataFileExternalPath();
     }
 
     public boolean statsDenseStore() {

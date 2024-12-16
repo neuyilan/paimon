@@ -76,7 +76,7 @@ public class RollingFileWriterTest {
                                         LocalFileIO.create(),
                                         fileFormat.createWriterFactory(SCHEMA),
                                         new DataFilePathFactory(
-                                                        tablePathProvider.getDefaultWriteRootPath(),
+                                                        tablePathProvider.getDataFileExternalPath(),
                                                         new Path(
                                                                 tablePathProvider
                                                                                 .getReleativeTableWritePath()

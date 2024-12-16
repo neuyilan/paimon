@@ -67,7 +67,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import static org.apache.paimon.CoreOptions.DEFAULT_WRITE_LOCATION;
+import static org.apache.paimon.CoreOptions.DATA_FILE_EXTERNAL_PATH;
 import static org.apache.paimon.CoreOptions.FS_OSS_ACCESSKEY_ID;
 import static org.apache.paimon.CoreOptions.FS_OSS_ACCESSKEY_SECRET;
 import static org.apache.paimon.CoreOptions.FS_OSS_ENDPOINT;
@@ -186,10 +186,10 @@ public abstract class AbstractFlinkTableFactory
     }
 
     void addMultiLocationProperties(CatalogContext context, Map<String, String> options) {
-        if (options.containsKey(DEFAULT_WRITE_LOCATION.key())
-                && options.get(DEFAULT_WRITE_LOCATION.key()) != null) {
+        if (options.containsKey(DATA_FILE_EXTERNAL_PATH.key())
+                && options.get(DATA_FILE_EXTERNAL_PATH.key()) != null) {
             context.options()
-                    .set(DEFAULT_WRITE_LOCATION, options.get(DEFAULT_WRITE_LOCATION.key()));
+                    .set(DATA_FILE_EXTERNAL_PATH, options.get(DATA_FILE_EXTERNAL_PATH.key()));
 
             // TODO@houliangqi, need to check the properties
             // OSS specific properties

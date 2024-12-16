@@ -126,7 +126,7 @@ public class FileStorePathFactory {
 
     public DataFilePathFactory createDataFilePathFactory(BinaryRow partition, int bucket) {
         return new DataFilePathFactory(
-                tablePathProvider.getDefaultWriteRootPath(),
+                tablePathProvider.getDataFileExternalPath(),
                 relativeDataFilePath(partition, bucket),
                 formatIdentifier,
                 dataFilePrefix,

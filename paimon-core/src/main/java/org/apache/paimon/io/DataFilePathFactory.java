@@ -89,6 +89,7 @@ public class DataFilePathFactory {
         return new Path(parent + "/" + fileName);
     }
 
+    // used for read
     public Path toPath(Path rootLocation, String fileName) {
         Path tmpParent = new Path(rootLocation, relativeDataFilePath);
         return new Path(tmpParent + "/" + fileName);
@@ -129,5 +130,9 @@ public class DataFilePathFactory {
         }
 
         return fileName.substring(index + 1);
+    }
+
+    public Path getDefaultWriteRootPath() {
+        return defaultWriteRootPath;
     }
 }

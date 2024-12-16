@@ -41,9 +41,9 @@ public class HybridFileIO implements FileIO {
 
     @Override
     public boolean isObjectStore() {
-        if (options.get(CoreOptions.DEFAULT_WRITE_LOCATION) != null
-                && ((options.get(CoreOptions.DEFAULT_WRITE_LOCATION).startsWith("oss://")
-                        || (options.get(CoreOptions.DEFAULT_WRITE_LOCATION)
+        if (options.get(CoreOptions.DATA_FILE_EXTERNAL_PATH) != null
+                && ((options.get(CoreOptions.DATA_FILE_EXTERNAL_PATH).startsWith("oss://")
+                        || (options.get(CoreOptions.DATA_FILE_EXTERNAL_PATH)
                                 .startsWith("s3://"))))) {
             return true;
         }

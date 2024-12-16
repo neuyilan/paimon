@@ -83,15 +83,14 @@ public class FileStoreTableFactory {
             TableSchema tableSchema,
             Options dynamicOptions,
             CatalogEnvironment catalogEnvironment) {
-        Path qihouliang = tablePath;
         CoreOptions coreOptions = CoreOptions.fromMap(tableSchema.options());
-        Path defaultWriteLocationPath = null;
-        String defaultWriteLocation = coreOptions.getDefaultWriteLocation();
-        if (coreOptions.getDefaultWriteLocation() != null) {
-            defaultWriteLocationPath = new Path(defaultWriteLocation);
+        Path dataFileExternalPath = null;
+        String dataFileExternalPathString = coreOptions.getDataFileExternalPath();
+        if (dataFileExternalPathString != null) {
+            dataFileExternalPath = new Path(dataFileExternalPathString);
         }
         TablePathProvider tablePathProvider =
-                new TablePathProvider(tablePath, defaultWriteLocationPath);
+                new TablePathProvider(tablePath, dataFileExternalPath);
         FileStoreTable table =
                 createWithoutFallbackBranch(
                         fileIO, tablePathProvider, tableSchema, dynamicOptions, catalogEnvironment);
